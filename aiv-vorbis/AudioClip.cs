@@ -4,11 +4,13 @@ using OpenTK.Audio.OpenAL;
 
 namespace Aiv.Vorbis
 {
-	public class AudioClip
+	public class AudioClip : IDisposable
 	{
 		private VorbisReader reader;
 
-		private int bufferId;
+		private int bufferId = -1;
+
+		private bool disposed;
 
 		public int BufferId {
 			get {
@@ -50,6 +52,7 @@ namespace Aiv.Vorbis
 		{
 			this.reader = new VorbisReader (fileName);
 			this.bufferId = AL.GenBuffer ();
+			AudioDevice.CheckError ("allocating OpenAL buffer for clip");
 			float[] buffer = new float[this.Samples * this.Channels];
 			// ReadSamples could return less data than required for various reasons
 			int count = this.reader.ReadSamples (buffer, 0, buffer.Length);
@@ -59,7 +62,16 @@ namespace Aiv.Vorbis
 
 		~AudioClip ()
 		{
-			AL.DeleteBuffer (this.bufferId);
+			if (!this.disposed)
+				this.Dispose ();
+		}
+
+		public void Dispose() {
+			if (this.disposed)
+				return;
+			if (this.bufferId > -1)
+				AL.DeleteBuffer (this.bufferId);
+			this.disposed = true;
 		}
 	}
 }

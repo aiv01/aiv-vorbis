@@ -5,15 +5,17 @@ using NVorbis;
 
 namespace Aiv.Vorbis
 {
-	public class AudioSource
+	public class AudioSource : IDisposable
 	{
 		
-		private int audioSourceId;
+		private int audioSourceId = -1;
 
 		private Thread streamWorker;
 		// required for streaming
 		private int[] bufferIds;
 		private bool streamLooping;
+
+		private bool disposed;
 
 		public bool IsPlaying {
 			get {
@@ -181,13 +183,24 @@ namespace Aiv.Vorbis
 
 		~AudioSource ()
 		{
+			if (!this.disposed)
+				this.Dispose ();
+			
+		}
+
+		public void Dispose ()
+		{
+			if (disposed)
+				return;
 			this.Stop ();
 			// when an audio source dies, the streaming worker should be destroyed too
 			if (this.streamWorker != null && this.streamWorker.IsAlive)
 				this.streamWorker.Abort ();
 			if (this.bufferIds != null)
 				AL.DeleteBuffers (this.bufferIds);
-			AL.DeleteSource (this.audioSourceId);
+			if (this.audioSourceId > -1)
+				AL.DeleteSource (this.audioSourceId);
+			this.disposed = true;
 		}
 	}
 }
