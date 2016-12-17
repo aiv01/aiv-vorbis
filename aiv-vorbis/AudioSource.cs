@@ -2,6 +2,9 @@
 using OpenTK.Audio.OpenAL;
 using System.Threading;
 using NVorbis;
+using System.Reflection;
+using System.Linq;
+using System.IO;
 
 namespace Aiv.Vorbis
 {
@@ -63,7 +66,6 @@ namespace Aiv.Vorbis
 
 		public AudioSource ()
 		{
-			AudioDevice.Init ();
 			this.audioSourceId = AL.GenSource ();
 			AudioDevice.CheckError ("allocating OpenAL source");
 			AL.GetSource (this.audioSourceId, ALSourcef.MinGain, out this.minVolume);
@@ -124,7 +126,16 @@ namespace Aiv.Vorbis
 		{
 			string fileName = (string)arg;
 
-			VorbisReader vreader = new VorbisReader (fileName);
+            VorbisReader vreader = null;
+            Assembly assembly = Assembly.GetEntryAssembly();
+            if (assembly.GetManifestResourceNames().Contains<string>(fileName))
+            {
+                Stream stream = assembly.GetManifestResourceStream(fileName);
+                vreader = new VorbisReader(stream, true);
+            }
+            else {
+                vreader = new VorbisReader(fileName);
+            }
 
 			// 3 seconds buffering
 			int bufLen = vreader.Channels * vreader.SampleRate * 3;
