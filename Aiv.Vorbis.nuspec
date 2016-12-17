@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Aiv.Vorbis</id>
+    <version>0.3</version>
+    <authors>Aiv, 20Tab</authors>
+    <owners>Aiv, 20Tab</owners>
+    <licenseUrl>https://github.com/aiv01/aiv-vorbis/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/aiv01/aiv-vorbis</projectUrl>
+    <iconUrl>https://avatars2.githubusercontent.com/u/15378741</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>OpenAL+NVorbis wrapper</description>
+    <releaseNotes>updated OpenTK and NVorbis versions, addes support for embedded files, refactored code, license is now LGPL</releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>aiv gaming opengl openal sound ogg vorbis</tags>
+    <dependencies>
+      <dependency id="OpenTK" version="2.0.0" />
+      <dependency id="NVorbis" version="0.8.5" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="aiv-vorbis/bin/Release/aiv-vorbis.dll" target="lib/net40" />
+  </files>
+</package>
